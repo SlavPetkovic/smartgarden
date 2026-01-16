@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Garden Dashboard</title>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/static/css/style.css">
+
+  <!-- Icons -->
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+<body>
+
+  <!-- Main container -->
+  <div class="main-container">
+
+    <!-- Dashboard title -->
+    <h1 class="dashboard-title">Smart Garden Dashboard</h1>
+
+    <a class="analytics-back-btn" href="/analytics" style="margin: 0 auto 18px auto; display:inline-flex;">
+    <i class="bi bi-bar-chart-line"></i>
+  Analytics
+    </a>
+
+
+
+    <!-- =========================
+         STATUS BAR (NEW)
+    ========================== -->
+    <div class="status-bar" id="status-bar">
+
+
+      <div class="status-item">
+        <span class="status-label">Watering:</span>
+        <span class="status-value" id="status-watering">--</span>
+      </div>
+
+      <div class="status-item">
+        <span class="status-label">Budget:</span>
+        <span class="status-value" id="status-budget">--</span>
+      </div>
+
+      <div class="status-item">
+        <span class="status-label">Last irrigation:</span>
+        <span class="status-value" id="status-last-irrigation">--</span>
+      </div>
+
+      <div class="status-item">
+        <span class="status-label">Learned gain:</span>
+        <span class="status-value" id="status-gain">--</span>
+      </div>
+
+    </div>
+    <!-- ========================= -->
+
+    <!-- Metrics -->
+    <div class="metrics">
+
+      <!-- Temperature -->
+      <div class="metric-card" data-metric="temperature">
+        <i class="bi bi-thermometer-sun icon" aria-label="Temperature"></i>
+        <p class="metric-value" id="temperature">
+          <span class="value">--</span><span class="unit">°C</span>
+        </p>
+        <p class="metric-label">Temperature</p>
+      </div>
+
+      <!-- Humidity -->
+      <div class="metric-card" data-metric="humidity">
+        <i class="bi bi-droplet icon" aria-label="Humidity"></i>
+        <p class="metric-value" id="humidity">
+          <span class="value">--</span><span class="unit">%</span>
+        </p>
+        <p class="metric-label">Humidity</p>
+      </div>
+
+      <!-- Pressure -->
+      <div class="metric-card" data-metric="pressure">
+        <i class="bi bi-wind icon" aria-label="Pressure"></i>
+        <p class="metric-value" id="pressure">
+          <span class="value">--</span><span class="unit">hPa</span>
+        </p>
+        <p class="metric-label">Pressure</p>
+      </div>
+
+      <!-- Luminosity -->
+      <div class="metric-card" data-metric="luminosity">
+        <i class="bi bi-sun-fill icon" aria-label="Luminosity"></i>
+        <p class="metric-value" id="luminosity">
+          <span class="value">--</span><span class="unit">lx</span>
+        </p>
+        <p class="metric-label">Luminosity</p>
+      </div>
+
+      <!-- Soil Moisture -->
+      <div class="metric-card" data-metric="soil_moisture">
+        <i class="bi bi-moisture icon" aria-label="Soil Moisture"></i>
+        <p class="metric-value" id="soil-moisture">
+          <span class="value">--</span><span class="unit">%</span>
+        </p>
+        <p class="metric-label">Soil Moisture</p>
+      </div>
+
+      <!-- Soil Temperature -->
+      <div class="metric-card" data-metric="soil_temperature">
+        <i class="bi bi-thermometer-half icon" aria-label="Soil Temperature"></i>
+        <p class="metric-value" id="soil-temperature">
+          <span class="value">--</span><span class="unit">°C</span>
+        </p>
+        <p class="metric-label">Soil Temp</p>
+      </div>
+
+    </div>
+    <!-- End metrics -->
+
+  </div>
+  <!-- End main container -->
+
+  <!-- JavaScript -->
+  <script src="/static/js/script.js"></script>
+
+</body>
+</html>

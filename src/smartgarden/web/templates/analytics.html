@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Garden Analytics</title>
+
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+  <div class="main-container analytics-container">
+
+    <div class="analytics-header">
+      <div class="analytics-title-wrap">
+        <h1 class="analytics-title">Smart Garden Analytics</h1>
+        <p class="analytics-subtitle">Understanding how your garden is adapting over time</p>
+      </div>
+
+      <a class="analytics-back-btn" href="/">
+        <i class="bi bi-arrow-left"></i>
+        Back to Dashboard
+      </a>
+    </div>
+
+    <!-- NEW: 2-column layout (main + right sidebar) -->
+    <div class="analytics-layout">
+
+      <!-- LEFT / MAIN -->
+      <div class="analytics-main">
+
+        <!-- KPI row -->
+        <div class="analytics-kpis">
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <i class="bi bi-droplet kpi-icon"></i>
+              <div class="kpi-label">Avg Soil Moisture</div>
+            </div>
+            <div class="kpi-value" id="kpi-avg-moisture">--</div>
+            <div class="kpi-note" id="kpi-avg-moisture-note">avg soil moisture (24h)</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <i class="bi bi-speedometer2 kpi-icon"></i>
+              <div class="kpi-label">Water Used</div>
+            </div>
+            <div class="kpi-value" id="kpi-water-used">--</div>
+            <div class="kpi-note">last 24h / last 7d</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <i class="bi bi-shield-check kpi-icon"></i>
+              <div class="kpi-label">Stress Events Avoided</div>
+            </div>
+            <div class="kpi-value" id="kpi-stress-avoided">--</div>
+            <div class="kpi-note">based on predictive irrigations (24h)</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <i class="bi bi-graph-up-arrow kpi-icon"></i>
+              <div class="kpi-label">Absorption Gain</div>
+            </div>
+            <div class="kpi-value" id="kpi-gain">--</div>
+            <div class="kpi-note">current learned gain</div>
+          </div>
+        </div>
+
+        <!-- Soil Moisture & Irrigation -->
+        <div class="analytics-panel chart-panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Soil Moisture & Irrigation</h2>
+            <div class="panel-actions">
+              <select id="range-hours" class="panel-select">
+                <option value="6">Last 6h</option>
+                <option value="24" selected>Last 24h</option>
+                <option value="168">Last 7d</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="panel-body">
+            <div class="chart-box">
+              <canvas id="chart-moisture"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Environmental Context (NOW full width like Soil Moisture) -->
+        <div class="analytics-panel chart-panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Environmental Context</h2>
+            <div class="panel-toggles">
+              <label class="toggle">
+                <input type="checkbox" id="toggle-temp" checked />
+                <span>Temp</span>
+              </label>
+              <label class="toggle">
+                <input type="checkbox" id="toggle-humidity" checked />
+                <span>Humidity</span>
+              </label>
+              <label class="toggle">
+                <input type="checkbox" id="toggle-light" checked />
+                <span>Light</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="panel-body">
+            <div class="chart-box">
+              <canvas id="chart-env"></canvas>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT / SIDEBAR (Decision History starts at KPI level) -->
+      <div class="analytics-sidebar">
+        <div class="analytics-panel decision-panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Decision History</h2>
+          </div>
+
+          <div class="panel-body decision-panel-body">
+            <table class="decision-table">
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Decision</th>
+                  <th>Reason</th>
+                  <th>Dose</th>
+                </tr>
+              </thead>
+              <tbody id="decision-table-body">
+                <tr><td colspan="4" style="opacity:.85;">Loading…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- /analytics-layout -->
+
+  </div>
+
+  <script src="/static/js/analytics.js"></script>
+</body>
+</html>

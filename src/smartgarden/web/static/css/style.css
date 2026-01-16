@@ -1,0 +1,533 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap");
+
+/* Global reset & font */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Body styling: full-screen background */
+body {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* Keep dashboard "centered" feel */
+  overflow: hidden;
+}
+
+/* Background image as an overlay */
+body::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  /* background image */
+  background: url('../images/background8.png') center / cover no-repeat;
+
+  /* dark overlay */
+  background-color: rgba(0, 0, 0, 0.25);
+
+  /* blend image + overlay */
+  background-blend-mode: multiply;
+
+  z-index: -1;
+}
+
+
+/* Main container holding everything */
+.main-container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Title for the dashboard */
+.dashboard-title {
+  font-size: 32px;
+  color: #fff;
+  margin-bottom: 40px;
+}
+
+/* Metrics container: flex layout */
+.metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+/* Individual metric card */
+.metric-card {
+  width: 180px;
+  min-height: 180px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(30px);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  padding: 20px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+.metric-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Icon styling for each card */
+.icon {
+  font-size: 50px;
+  margin-bottom: 10px;
+}
+
+/* Metric value (numeric reading) */
+.metric-value {
+  font-size: 34px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  position: relative;
+  display: flex;
+  align-items: baseline;
+}
+
+.metric-value .value {
+  margin-right: 4px;
+}
+
+.metric-value .unit {
+  font-size: 18px;
+  color: #ccc;
+}
+
+/* Metric label */
+.metric-label {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+/* Error state styling */
+.metric-card.error {
+  border-color: #ff4d4d;
+}
+
+.metric-card.error .metric-label::after {
+  content: " (Data Unavailable)";
+  color: #ff4d4d;
+  font-size: 14px;
+}
+
+/* Simple responsiveness */
+@media (max-width: 768px) {
+  .dashboard-title {
+    font-size: 28px;
+  }
+  .metric-card {
+    width: 140px;
+    min-height: 160px;
+  }
+  .icon {
+    font-size: 36px;
+  }
+  .metric-value {
+    font-size: 24px;
+  }
+  .metric-value .unit {
+    font-size: 14px;
+  }
+  .metric-label {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-title {
+    font-size: 24px;
+    margin-bottom: 30px;
+  }
+  .metric-card {
+    width: 120px;
+    min-height: 140px;
+    padding: 15px;
+  }
+  .icon {
+    font-size: 30px;
+  }
+  .metric-value {
+    font-size: 20px;
+  }
+  .metric-value .unit {
+    font-size: 12px;
+  }
+  .metric-label {
+    font-size: 12px;
+  }
+}
+
+/* -----------------------
+   Status Bar
+----------------------- */
+
+.status-bar {
+  margin: 0 auto 26px auto;
+  max-width: 1100px;
+  padding: 12px 16px;
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+
+  background: rgba(255, 255, 255, 0.10);
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  border-radius: 14px;
+  backdrop-filter: blur(18px);
+  color: #fff;
+}
+
+.status-item {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.status-label {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.status-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.status-value.good { color: #b9f6ca; }
+.status-value.warn { color: #ffe082; }
+.status-value.bad  { color: #ff8a80; }
+
+@media (max-width: 768px) {
+  .status-bar {
+    padding: 10px 12px;
+    margin-bottom: 20px;
+  }
+  .status-label, .status-value {
+    font-size: 13px;
+  }
+}
+
+/* ============================
+   ANALYTICS PAGE STYLES
+============================ */
+
+/* Give analytics more horizontal room so sidebar fits */
+.analytics-container {
+  max-width: 1600px;
+  width: 94%;
+
+  max-height: none;
+  overflow: visible;
+  padding-bottom: 0;
+
+  text-align: left;
+}
+
+.analytics-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin: 0 auto 18px auto;
+
+  /* ⬇️ THIS is the important part */
+  max-width: calc(920px + 494px + 16px); /* left column + sidebar + gap */
+  width: 100%;
+}
+
+
+.analytics-title {
+  font-size: 34px;
+  color: #fff;
+  margin-bottom: 6px;
+}
+
+.analytics-subtitle {
+  color: rgba(255,255,255,0.85);
+  font-size: 14px;
+}
+
+.analytics-back-btn {
+  text-decoration: none;
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.10);
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(18px);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 2-column layout
+   - left column is capped so charts DO NOT expand endlessly
+   - right column is ~30% wider than the old 380px (≈494px)
+*/
+.analytics-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 920px) 494px;
+  gap: 16px;
+
+  /* keep the whole block centered */
+  justify-content: center;
+
+  /* lets sidebar stretch to match left column */
+  align-items: stretch;
+}
+
+/* Main column */
+.analytics-main {
+  min-width: 0;
+}
+
+/* IMPORTANT: remove extra gap after the last left panel so sidebar bottom aligns */
+.analytics-main .analytics-panel:last-child {
+  margin-bottom: 0;
+}
+
+/* Sidebar column */
+.analytics-sidebar {
+  align-self: stretch;
+  min-width: 0;
+}
+
+/* KPI grid */
+.analytics-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.kpi-card {
+  background: rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(24px);
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  border-radius: 16px;
+  padding: 14px 16px;
+  color: #fff;
+}
+
+.kpi-top {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 8px;
+  opacity: 0.95;
+}
+
+.kpi-icon {
+  font-size: 20px;
+  opacity: 0.95;
+}
+
+.kpi-label {
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.92;
+}
+
+.kpi-value {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.kpi-note {
+  font-size: 12px;
+  color: rgba(255,255,255,0.82);
+}
+
+.analytics-panel {
+  background: rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(24px);
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  border-radius: 16px;
+  color: #fff;
+  margin-bottom: 16px;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.14);
+}
+
+.panel-title {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.panel-body {
+  padding: 12px 14px 16px 14px;
+}
+
+.panel-select {
+  background: rgba(0,0,0,0.18);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 10px;
+  padding: 6px 10px;
+}
+
+.panel-toggles {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  opacity: 0.95;
+}
+
+.toggle {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: 12px;
+  background: rgba(0,0,0,0.14);
+  border: 1px solid rgba(255,255,255,0.18);
+}
+
+.toggle input {
+  accent-color: #fff;
+}
+
+/* Chart sizing */
+.chart-box {
+  height: 310px;
+  max-height: 310px;
+}
+
+.chart-box canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+/* ============================
+   DECISION HISTORY SCROLL (FIX)
+   Your panel wasn't scrolling because it had no constrained height.
+   This guarantees a viewport-based max height + internal scroll.
+============================ */
+
+/* Let the decision panel fill the sidebar column height */
+.decision-panel {
+  height: 100%;
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* important for nested scrolling in flex */
+}
+
+/* Force scroll area to have a max height */
+.decision-panel-body {
+  flex: 1;
+  min-height: 0;            /* important for nested scrolling in flex */
+  overflow-y: auto;         /* ✅ scroll inside */
+  max-height: calc(100vh - 230px); /* ✅ guarantees scroll appears */
+  padding-right: 6px;
+}
+
+/* Nice scrollbar (Chrome/Safari) */
+.decision-panel-body::-webkit-scrollbar {
+  width: 10px;
+}
+.decision-panel-body::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.18);
+  border-radius: 10px;
+}
+.decision-panel-body::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.10);
+  border-radius: 10px;
+}
+
+/* Decision table styling */
+.decision-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.decision-table th, .decision-table td {
+  padding: 10px 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+  vertical-align: top;
+}
+
+/* Sticky header in scroll area */
+.decision-table thead th {
+  position: sticky;
+  top: 0;
+  background: rgba(30, 30, 30, 0.35);
+  backdrop-filter: blur(10px);
+  z-index: 2;
+}
+
+.decision-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot.green { background: rgba(185, 246, 202, 0.9); }
+.dot.amber { background: rgba(255, 224, 130, 0.9); }
+.dot.red   { background: rgba(255, 138, 128, 0.9); }
+
+/* Responsive */
+@media (max-width: 1180px) {
+  .analytics-layout {
+    grid-template-columns: 1fr;
+  }
+  .analytics-kpis {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .decision-panel {
+    height: auto;
+  }
+  .decision-panel-body {
+    max-height: 320px;
+  }
+
+  .analytics-main .analytics-panel:last-child {
+    margin-bottom: 16px;
+  }
+}
+
+@media (max-width: 560px) {
+  .analytics-kpis {
+    grid-template-columns: 1fr;
+  }
+  .chart-box {
+    height: 260px;
+  }
+}
