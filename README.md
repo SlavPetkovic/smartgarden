@@ -1,4 +1,9 @@
 # 🌱 SmartGarden
+<img src="img.png" alt="img.png" width="800" height="500">
+
+
+
+
 
 **SmartGarden** is an adaptive, sensor-driven garden automation system designed to monitor environmental conditions, make intelligent control decisions, and continuously improve its behavior over time.
 
