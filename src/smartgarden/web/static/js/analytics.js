@@ -1,10 +1,16 @@
 let moistureChart = null;
 let envChart = null;
+let lightChart = null;
 
 function fmtTimeLabel(iso) {
   try {
     const d = new Date(iso);
-    return d.toLocaleString(undefined, { month:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit" });
+    return d.toLocaleString(undefined, {
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   } catch {
     return iso;
   }
@@ -26,12 +32,8 @@ async function fetchJson(url) {
   return await res.json();
 }
 
-
 function buildMoistureChart(payload) {
   const canvas = document.getElementById("chart-moisture");
-
-  // IMPORTANT: Chart.js will ignore CSS height unless maintainAspectRatio=false.
-  // So make sure the *container* (or the canvas parent) has a fixed height in CSS.
   const ctx = canvas.getContext("2d");
 
   const labels = payload.readings.map(r => fmtTimeLabel(r.timestamp));
@@ -75,7 +77,7 @@ function buildMoistureChart(payload) {
     },
     options: {
       responsive: true,
-      maintainAspectRatio: false, // ✅ THIS is the key to letting height shrink
+      maintainAspectRatio: false,
       interaction: { mode: "nearest", intersect: false },
       plugins: {
         legend: { labels: { color: "rgba(255,255,255,0.9)" } },
@@ -100,7 +102,7 @@ function buildMoistureChart(payload) {
             maxRotation: 35,
             minRotation: 35,
             autoSkip: true,
-            maxTicksLimit: 12 // ✅ fewer labels = less vertical space
+            maxTicksLimit: 12
           },
           grid: { color: "rgba(255,255,255,0.08)" }
         },
@@ -113,24 +115,19 @@ function buildMoistureChart(payload) {
   });
 }
 
-
-
 function buildEnvChart(payload) {
   const ctx = document.getElementById("chart-env").getContext("2d");
   const labels = payload.readings.map(r => fmtTimeLabel(r.timestamp));
 
   const temp = payload.readings.map(r => r.temperature_c);
   const hum = payload.readings.map(r => r.humidity_pct);
-  const light = payload.readings.map(r => r.light_lux);
 
   const showTemp = document.getElementById("toggle-temp").checked;
   const showHum = document.getElementById("toggle-humidity").checked;
-  const showLight = document.getElementById("toggle-light").checked;
 
   const datasets = [];
   if (showTemp) datasets.push({ label: "Temp (°C)", data: temp, tension: 0.25, pointRadius: 0, borderWidth: 2 });
   if (showHum) datasets.push({ label: "Humidity (%)", data: hum, tension: 0.25, pointRadius: 0, borderWidth: 2 });
-  if (showLight) datasets.push({ label: "Light (lux)", data: light, tension: 0.25, pointRadius: 0, borderWidth: 2 });
 
   if (envChart) envChart.destroy();
 
@@ -139,7 +136,7 @@ function buildEnvChart(payload) {
     data: { labels, datasets },
     options: {
       responsive: true,
-      maintainAspectRatio: false, // ✅ match moisture chart behavior
+      maintainAspectRatio: false,
       interaction: { mode: "nearest", intersect: false },
       plugins: {
         legend: { labels: { color: "rgba(255,255,255,0.9)" } }
@@ -151,7 +148,7 @@ function buildEnvChart(payload) {
             maxRotation: 35,
             minRotation: 35,
             autoSkip: true,
-            maxTicksLimit: 12 // ✅ match moisture chart feel
+            maxTicksLimit: 12
           },
           grid: { color: "rgba(255,255,255,0.08)" }
         },
@@ -164,8 +161,47 @@ function buildEnvChart(payload) {
   });
 }
 
+function buildLightChart(payload) {
+  const ctx = document.getElementById("chart-light").getContext("2d");
+  const labels = payload.readings.map(r => fmtTimeLabel(r.timestamp));
 
+  const light = payload.readings.map(r => r.light_lux);
+  const showLight = document.getElementById("toggle-light").checked;
 
+  const datasets = [];
+  if (showLight) datasets.push({ label: "Light (lux)", data: light, tension: 0.25, pointRadius: 0, borderWidth: 2 });
+
+  if (lightChart) lightChart.destroy();
+
+  lightChart = new Chart(ctx, {
+    type: "line",
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: "nearest", intersect: false },
+      plugins: {
+        legend: { labels: { color: "rgba(255,255,255,0.9)" } }
+      },
+      scales: {
+        x: {
+          ticks: {
+            color: "rgba(255,255,255,0.8)",
+            maxRotation: 35,
+            minRotation: 35,
+            autoSkip: true,
+            maxTicksLimit: 12
+          },
+          grid: { color: "rgba(255,255,255,0.08)" }
+        },
+        y: {
+          ticks: { color: "rgba(255,255,255,0.8)" },
+          grid: { color: "rgba(255,255,255,0.08)" }
+        }
+      }
+    }
+  });
+}
 
 function renderDecisionTable(rows) {
   const tbody = document.getElementById("decision-table-body");
@@ -181,7 +217,11 @@ function renderDecisionTable(rows) {
     if (r.decision === "blocked") dotCls = "amber";
     if (r.decision === "no_action") dotCls = "red";
 
-    const decisionLabel = r.decision === "irrigate" ? "Irrigate" : (r.decision === "blocked" ? "Blocked" : "No action");
+    const decisionLabel =
+      r.decision === "irrigate"
+        ? "Irrigate"
+        : (r.decision === "blocked" ? "Blocked" : "No action");
+
     const dose = r.pump_duration_seconds ? fmtSeconds(r.pump_duration_seconds) : "—";
 
     const tr = document.createElement("tr");
@@ -207,7 +247,6 @@ function setText(id, txt) {
 async function loadAnalytics() {
   const hours = document.getElementById("range-hours").value;
 
-  // summary + timeseries
   const summary = await fetchJson(`/api/analytics/summary?hours=${hours}`);
   const ts = await fetchJson(`/api/analytics/timeseries?hours=${hours}`);
   const decisions = await fetchJson(`/api/analytics/decisions?hours=${hours}&limit=20`);
@@ -219,19 +258,23 @@ async function loadAnalytics() {
 
   buildMoistureChart(ts);
   buildEnvChart(ts);
+  buildLightChart(ts);
   renderDecisionTable(decisions.items);
 }
 
 function wireInteractions() {
   document.getElementById("range-hours").addEventListener("change", () => loadAnalytics());
 
-  for (const id of ["toggle-temp", "toggle-humidity", "toggle-light"]) {
-    document.getElementById(id).addEventListener("change", async () => {
-      const hours = document.getElementById("range-hours").value;
-      const ts = await fetchJson(`/api/analytics/timeseries?hours=${hours}`);
-      buildEnvChart(ts);
-    });
-  }
+  const onToggle = async () => {
+    const hours = document.getElementById("range-hours").value;
+    const ts = await fetchJson(`/api/analytics/timeseries?hours=${hours}`);
+    buildEnvChart(ts);
+    buildLightChart(ts);
+  };
+
+  document.getElementById("toggle-temp").addEventListener("change", onToggle);
+  document.getElementById("toggle-humidity").addEventListener("change", onToggle);
+  document.getElementById("toggle-light").addEventListener("change", onToggle);
 }
 
 (async function init() {
