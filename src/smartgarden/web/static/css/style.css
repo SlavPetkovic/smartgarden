@@ -15,7 +15,7 @@ body {
   display: block;           /* DON'T force everything into a centered flexbox */
   overflow-x: hidden;       /* prevent sideways scroll */
   overflow-y: auto;         /* allow vertical scroll */
-  padding: 24px 12px;       /* keep content off the edges on phones */
+  padding: clamp(14px, 2.2vw, 24px) clamp(10px, 1.8vw, 12px);
 }
 
 /* Background image as an overlay */
@@ -45,51 +45,56 @@ body::before {
 
 /* Title for the dashboard */
 .dashboard-title {
-  font-size: clamp(22px, 4vw, 32px);
+  font-size: clamp(20px, 3.4vw, 32px);
   color: #fff;
-  margin-bottom: clamp(22px, 5vw, 40px);
+  margin-bottom: clamp(16px, 3.2vw, 40px);
 }
 
 /* Metrics container: flex layout */
 .metrics {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
   justify-content: center;
+  gap: clamp(12px, 1.6vw, 20px);
 }
 
 /* Individual metric card */
 .metric-card {
-  flex: 1 1 160px;          /* responsive cards: grow/shrink/wrap */
-  max-width: 220px;
-  min-height: 180px;
+  flex: 1 1 150px;          /* allows tighter wrap + shrink */
+  max-width: 240px;
+  min-height: clamp(120px, 16vw, 180px);
+
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(30px);
   border: 2px solid rgba(255, 255, 255, 0.2);
-  border-radius: 16px;
-  padding: 20px;
+
+  border-radius: clamp(12px, 1.2vw, 16px);
+  padding: clamp(10px, 1.6vw, 20px);
+
   color: #fff;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
   transition: transform 0.3s ease;
 }
+
 .metric-card:hover {
   transform: translateY(-5px);
 }
 
 /* Icon styling for each card */
 .icon {
-  font-size: 50px;
-  margin-bottom: 10px;
+  font-size: clamp(26px, 4.2vw, 50px);
+  margin-bottom: clamp(6px, 1.2vw, 10px);
 }
 
 /* Metric value (numeric reading) */
 .metric-value {
-  font-size: 34px;
+  font-size: clamp(18px, 3.4vw, 34px);
   font-weight: 600;
-  margin-bottom: 6px;
+  margin-bottom: clamp(4px, 1vw, 6px);
   position: relative;
   display: flex;
   align-items: baseline;
@@ -100,13 +105,13 @@ body::before {
 }
 
 .metric-value .unit {
-  font-size: 18px;
+  font-size: clamp(11px, 1.8vw, 18px);
   color: #ccc;
 }
 
 /* Metric label */
 .metric-label {
-  font-size: 16px;
+  font-size: clamp(11px, 1.8vw, 16px);
   font-weight: 400;
 }
 
@@ -118,30 +123,7 @@ body::before {
 .metric-card.error .metric-label::after {
   content: " (Data Unavailable)";
   color: #ff4d4d;
-  font-size: 14px;
-}
-
-/* Simple responsiveness */
-@media (max-width: 768px) {
-  body { padding: 18px 10px; }
-  .icon { font-size: 36px; }
-  .metric-value { font-size: 24px; }
-  .metric-value .unit { font-size: 14px; }
-  .metric-label { font-size: 14px; }
-}
-
-@media (max-width: 480px) {
-  body { padding: 14px 10px; }
-  .metric-card { min-height: 150px; padding: 15px; }
-  .icon { font-size: 30px; }
-  .metric-value { font-size: 20px; }
-  .metric-value .unit { font-size: 12px; }
-  .metric-label { font-size: 12px; }
-}
-
-@media (max-width: 360px) {
-  .metric-card { flex-basis: 140px; }
-  .status-item { padding: 6px 8px; }
+  font-size: clamp(11px, 1.7vw, 14px);
 }
 
 /* -----------------------
@@ -149,18 +131,18 @@ body::before {
 ----------------------- */
 
 .status-bar {
-  margin: 0 auto 26px auto;
+  margin: 0 auto clamp(16px, 2vw, 26px) auto;
   max-width: 1100px;
-  padding: 12px 16px;
+  padding: clamp(10px, 1.6vw, 12px) clamp(12px, 2vw, 16px);
 
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: clamp(8px, 1.2vw, 12px);
   justify-content: center;
 
   background: rgba(255, 255, 255, 0.10);
   border: 2px solid rgba(255, 255, 255, 0.18);
-  border-radius: 14px;
+  border-radius: clamp(12px, 1.2vw, 14px);
   backdrop-filter: blur(18px);
   color: #fff;
 }
@@ -169,18 +151,18 @@ body::before {
   display: flex;
   gap: 8px;
   align-items: center;
-  padding: 6px 10px;
+  padding: clamp(6px, 1vw, 6px) clamp(8px, 1.4vw, 10px);
   border-radius: 12px;
   background: rgba(0, 0, 0, 0.12);
 }
 
 .status-label {
-  font-size: 14px;
+  font-size: clamp(12px, 1.4vw, 14px);
   color: rgba(255, 255, 255, 0.85);
 }
 
 .status-value {
-  font-size: 14px;
+  font-size: clamp(12px, 1.4vw, 14px);
   font-weight: 600;
   color: #fff;
 }
@@ -189,13 +171,46 @@ body::before {
 .status-value.warn { color: #ffe082; }
 .status-value.bad  { color: #ff8a80; }
 
-@media (max-width: 768px) {
+/* ============================
+   DEVICE TUNING BREAKPOINTS
+============================ */
+
+/* Phones (iPhone / Galaxy) */
+@media (max-width: 480px) {
+  .main-container { width: 96%; }
+  .metric-card { max-width: none; }  /* allow full width if needed */
+}
+
+/* Very small phones */
+@media (max-width: 360px) {
+  .metrics { gap: 10px; }
+  .status-item { padding: 6px 8px; }
+}
+
+/* Tablets */
+@media (max-width: 900px) {
+  .dashboard-title { margin-bottom: 18px; }
+  .status-bar { margin-bottom: 18px; }
+}
+
+/*
+  10-inch / kiosk landscape tuning:
+  Many 10" displays are 1024/1280px wide so phone breakpoints won't fire.
+  This tightens density on "smaller physical" landscape screens.
+*/
+@media (max-width: 1400px) and (orientation: landscape) {
+  .dashboard-title {
+    font-size: 24px;
+    margin-bottom: 18px;
+  }
+
   .status-bar {
     padding: 10px 12px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
   }
-  .status-label, .status-value {
-    font-size: 13px;
+
+  .metric-card {
+    max-width: 200px;      /* tighter tiles on 10" */
   }
 }
 
@@ -226,14 +241,14 @@ body::before {
 }
 
 .analytics-title {
-  font-size: 34px;
+  font-size: clamp(22px, 3.2vw, 34px);
   color: #fff;
   margin-bottom: 6px;
 }
 
 .analytics-subtitle {
   color: rgba(255,255,255,0.85);
-  font-size: 14px;
+  font-size: clamp(12px, 1.6vw, 14px);
 }
 
 .analytics-back-btn {
@@ -245,7 +260,6 @@ body::before {
   border: 2px solid rgba(255, 255, 255, 0.18);
   backdrop-filter: blur(18px);
 
-  /* moved from inline HTML so it responds properly */
   margin: 0 auto 18px auto;
   display: inline-flex;
   align-items: center;
@@ -296,19 +310,19 @@ body::before {
 .kpi-icon { font-size: 20px; opacity: 0.95; }
 
 .kpi-label {
-  font-size: 14px;
+  font-size: clamp(12px, 1.6vw, 14px);
   font-weight: 500;
   opacity: 0.92;
 }
 
 .kpi-value {
-  font-size: 28px;
+  font-size: clamp(20px, 2.6vw, 28px);
   font-weight: 700;
   margin-bottom: 4px;
 }
 
 .kpi-note {
-  font-size: 12px;
+  font-size: clamp(11px, 1.4vw, 12px);
   color: rgba(255,255,255,0.82);
 }
 
@@ -386,7 +400,7 @@ body::before {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  max-height: calc(100dvh - 230px); /* changed to 100dvh for mobile */
+  max-height: calc(100dvh - 230px);
   padding-right: 6px;
 }
 
