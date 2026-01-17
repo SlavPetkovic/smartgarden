@@ -8,14 +8,16 @@
   font-family: "Poppins", sans-serif;
 }
 
-/* Body styling: allow natural flow + scrolling on small screens */
+/* Body styling: full-screen background */
 body {
   position: relative;
-  min-height: 100dvh;       /* mobile-safe viewport height */
-  display: block;           /* DON'T force everything into a centered flexbox */
-  overflow-x: hidden;       /* prevent sideways scroll */
-  overflow-y: auto;         /* allow vertical scroll */
-  padding: 24px 12px;       /* keep content off the edges on phones */
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* Keep dashboard "centered" feel */
+  overflow: hidden;
 }
 
 /* Background image as an overlay */
@@ -36,18 +38,20 @@ body::before {
   z-index: -1;
 }
 
+
 /* Main container holding everything */
 .main-container {
-  width: min(94%, 1200px);
+  width: 90%;
+  max-width: 1200px;
   margin: 0 auto;
   text-align: center;
 }
 
 /* Title for the dashboard */
 .dashboard-title {
-  font-size: clamp(22px, 4vw, 32px);
+  font-size: 32px;
   color: #fff;
-  margin-bottom: clamp(22px, 5vw, 40px);
+  margin-bottom: 40px;
 }
 
 /* Metrics container: flex layout */
@@ -60,8 +64,7 @@ body::before {
 
 /* Individual metric card */
 .metric-card {
-  flex: 1 1 160px;          /* responsive cards: grow/shrink/wrap */
-  max-width: 220px;
+  width: 180px;
   min-height: 180px;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(30px);
@@ -123,25 +126,49 @@ body::before {
 
 /* Simple responsiveness */
 @media (max-width: 768px) {
-  body { padding: 18px 10px; }
-  .icon { font-size: 36px; }
-  .metric-value { font-size: 24px; }
-  .metric-value .unit { font-size: 14px; }
-  .metric-label { font-size: 14px; }
+  .dashboard-title {
+    font-size: 28px;
+  }
+  .metric-card {
+    width: 140px;
+    min-height: 160px;
+  }
+  .icon {
+    font-size: 36px;
+  }
+  .metric-value {
+    font-size: 24px;
+  }
+  .metric-value .unit {
+    font-size: 14px;
+  }
+  .metric-label {
+    font-size: 14px;
+  }
 }
 
 @media (max-width: 480px) {
-  body { padding: 14px 10px; }
-  .metric-card { min-height: 150px; padding: 15px; }
-  .icon { font-size: 30px; }
-  .metric-value { font-size: 20px; }
-  .metric-value .unit { font-size: 12px; }
-  .metric-label { font-size: 12px; }
-}
-
-@media (max-width: 360px) {
-  .metric-card { flex-basis: 140px; }
-  .status-item { padding: 6px 8px; }
+  .dashboard-title {
+    font-size: 24px;
+    margin-bottom: 30px;
+  }
+  .metric-card {
+    width: 120px;
+    min-height: 140px;
+    padding: 15px;
+  }
+  .icon {
+    font-size: 30px;
+  }
+  .metric-value {
+    font-size: 20px;
+  }
+  .metric-value .unit {
+    font-size: 12px;
+  }
+  .metric-label {
+    font-size: 12px;
+  }
 }
 
 /* -----------------------
@@ -203,6 +230,7 @@ body::before {
    ANALYTICS PAGE STYLES
 ============================ */
 
+/* Give analytics more horizontal room so sidebar fits */
 .analytics-container {
   max-width: 1600px;
   width: 94%;
@@ -221,9 +249,11 @@ body::before {
   gap: 16px;
   margin: 0 auto 18px auto;
 
-  max-width: calc(920px + 494px + 16px);
+  /* ⬇️ THIS is the important part */
+  max-width: calc(920px + 494px + 16px); /* left column + sidebar + gap */
   width: 100%;
 }
+
 
 .analytics-title {
   font-size: 34px;
@@ -244,31 +274,44 @@ body::before {
   background: rgba(255, 255, 255, 0.10);
   border: 2px solid rgba(255, 255, 255, 0.18);
   backdrop-filter: blur(18px);
-
-  /* moved from inline HTML so it responds properly */
-  margin: 0 auto 18px auto;
   display: inline-flex;
   align-items: center;
   gap: 8px;
 }
 
-/* 2-column layout */
+/* 2-column layout
+   - left column is capped so charts DO NOT expand endlessly
+   - right column is ~30% wider than the old 380px (≈494px)
+*/
 .analytics-layout {
   display: grid;
   grid-template-columns: minmax(0, 920px) 494px;
   gap: 16px;
+
+  /* keep the whole block centered */
   justify-content: center;
+
+  /* lets sidebar stretch to match left column */
   align-items: stretch;
 }
 
-.analytics-main { min-width: 0; }
-.analytics-main .analytics-panel:last-child { margin-bottom: 0; }
+/* Main column */
+.analytics-main {
+  min-width: 0;
+}
 
+/* IMPORTANT: remove extra gap after the last left panel so sidebar bottom aligns */
+.analytics-main .analytics-panel:last-child {
+  margin-bottom: 0;
+}
+
+/* Sidebar column */
 .analytics-sidebar {
   align-self: stretch;
   min-width: 0;
 }
 
+/* KPI grid */
 .analytics-kpis {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -293,7 +336,10 @@ body::before {
   opacity: 0.95;
 }
 
-.kpi-icon { font-size: 20px; opacity: 0.95; }
+.kpi-icon {
+  font-size: 20px;
+  opacity: 0.95;
+}
 
 .kpi-label {
   font-size: 14px;
@@ -329,9 +375,14 @@ body::before {
   border-bottom: 1px solid rgba(255,255,255,0.14);
 }
 
-.panel-title { font-size: 16px; font-weight: 600; }
+.panel-title {
+  font-size: 16px;
+  font-weight: 600;
+}
 
-.panel-body { padding: 12px 14px 16px 14px; }
+.panel-body {
+  padding: 12px 14px 16px 14px;
+}
 
 .panel-select {
   background: rgba(0,0,0,0.18);
@@ -359,7 +410,9 @@ body::before {
   border: 1px solid rgba(255,255,255,0.18);
 }
 
-.toggle input { accent-color: #fff; }
+.toggle input {
+  accent-color: #fff;
+}
 
 /* Chart sizing */
 .chart-box {
@@ -373,24 +426,34 @@ body::before {
   display: block;
 }
 
-/* Decision history scroll */
+/* ============================
+   DECISION HISTORY SCROLL (FIX)
+   Your panel wasn't scrolling because it had no constrained height.
+   This guarantees a viewport-based max height + internal scroll.
+============================ */
+
+/* Let the decision panel fill the sidebar column height */
 .decision-panel {
   height: 100%;
   margin-bottom: 0;
   display: flex;
   flex-direction: column;
-  min-height: 0;
+  min-height: 0; /* important for nested scrolling in flex */
 }
 
+/* Force scroll area to have a max height */
 .decision-panel-body {
   flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  max-height: calc(100dvh - 230px); /* changed to 100dvh for mobile */
+  min-height: 0;            /* important for nested scrolling in flex */
+  overflow-y: auto;         /* ✅ scroll inside */
+  max-height: calc(100vh - 230px); /* ✅ guarantees scroll appears */
   padding-right: 6px;
 }
 
-.decision-panel-body::-webkit-scrollbar { width: 10px; }
+/* Nice scrollbar (Chrome/Safari) */
+.decision-panel-body::-webkit-scrollbar {
+  width: 10px;
+}
 .decision-panel-body::-webkit-scrollbar-thumb {
   background: rgba(255,255,255,0.18);
   border-radius: 10px;
@@ -400,6 +463,7 @@ body::before {
   border-radius: 10px;
 }
 
+/* Decision table styling */
 .decision-table {
   width: 100%;
   border-collapse: collapse;
@@ -412,6 +476,7 @@ body::before {
   vertical-align: top;
 }
 
+/* Sticky header in scroll area */
 .decision-table thead th {
   position: sticky;
   top: 0;
@@ -440,14 +505,29 @@ body::before {
 
 /* Responsive */
 @media (max-width: 1180px) {
-  .analytics-layout { grid-template-columns: 1fr; }
-  .analytics-kpis { grid-template-columns: repeat(2, 1fr); }
-  .decision-panel { height: auto; }
-  .decision-panel-body { max-height: 320px; }
-  .analytics-main .analytics-panel:last-child { margin-bottom: 16px; }
+  .analytics-layout {
+    grid-template-columns: 1fr;
+  }
+  .analytics-kpis {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .decision-panel {
+    height: auto;
+  }
+  .decision-panel-body {
+    max-height: 320px;
+  }
+
+  .analytics-main .analytics-panel:last-child {
+    margin-bottom: 16px;
+  }
 }
 
 @media (max-width: 560px) {
-  .analytics-kpis { grid-template-columns: 1fr; }
-  .chart-box { height: 260px; }
+  .analytics-kpis {
+    grid-template-columns: 1fr;
+  }
+  .chart-box {
+    height: 260px;
+  }
 }
