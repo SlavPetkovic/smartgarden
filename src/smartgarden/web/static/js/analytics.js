@@ -32,6 +32,33 @@ async function fetchJson(url) {
   return await res.json();
 }
 
+function chartOptionsBase() {
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: "nearest", intersect: false },
+    plugins: {
+      legend: { labels: { color: "rgba(255,255,255,0.9)" } }
+    },
+    scales: {
+      x: {
+        ticks: {
+          color: "rgba(255,255,255,0.8)",
+          maxRotation: 35,
+          minRotation: 35,
+          autoSkip: true,
+          maxTicksLimit: 12
+        },
+        grid: { color: "rgba(255,255,255,0.08)" }
+      },
+      y: {
+        ticks: { color: "rgba(255,255,255,0.8)" },
+        grid: { color: "rgba(255,255,255,0.08)" }
+      }
+    }
+  };
+}
+
 function buildMoistureChart(payload) {
   const canvas = document.getElementById("chart-moisture");
   const ctx = canvas.getContext("2d");
@@ -39,7 +66,6 @@ function buildMoistureChart(payload) {
   const labels = payload.readings.map(r => fmtTimeLabel(r.timestamp));
   const moisture = payload.readings.map(r => r.soil_moisture);
 
-  // Support either field name (depending on your API)
   const irrigMarkers = (payload.irrigations || []).map(e => ({
     x: fmtTimeLabel(e.timestamp),
     y: (e.soil_moisture_at_event ?? e.moisture_at_time ?? null),
@@ -47,7 +73,6 @@ function buildMoistureChart(payload) {
     reason: e.reason
   }));
 
-  // We display irrigations as scatter points overlaying the line
   const scatterData = irrigMarkers
     .filter(p => p.y !== null && p.y !== undefined)
     .map(p => ({ x: p.x, y: p.y, seconds: p.seconds, reason: p.reason }));
@@ -59,28 +84,14 @@ function buildMoistureChart(payload) {
     data: {
       labels,
       datasets: [
-        {
-          label: "Soil Moisture",
-          data: moisture,
-          tension: 0.25,
-          pointRadius: 0,
-          borderWidth: 2
-        },
-        {
-          type: "scatter",
-          label: "Irrigation Events",
-          data: scatterData,
-          pointRadius: 5,
-          pointHoverRadius: 7
-        }
+        { label: "Soil Moisture", data: moisture, tension: 0.25, pointRadius: 0, borderWidth: 2 },
+        { type: "scatter", label: "Irrigation Events", data: scatterData, pointRadius: 5, pointHoverRadius: 7 }
       ]
     },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: { mode: "nearest", intersect: false },
+      ...chartOptionsBase(),
       plugins: {
-        legend: { labels: { color: "rgba(255,255,255,0.9)" } },
+        ...chartOptionsBase().plugins,
         tooltip: {
           callbacks: {
             label: (ctx) => {
@@ -93,22 +104,6 @@ function buildMoistureChart(payload) {
               return `Soil Moisture: ${ctx.raw}`;
             }
           }
-        }
-      },
-      scales: {
-        x: {
-          ticks: {
-            color: "rgba(255,255,255,0.8)",
-            maxRotation: 35,
-            minRotation: 35,
-            autoSkip: true,
-            maxTicksLimit: 12
-          },
-          grid: { color: "rgba(255,255,255,0.08)" }
-        },
-        y: {
-          ticks: { color: "rgba(255,255,255,0.8)" },
-          grid: { color: "rgba(255,255,255,0.08)" }
         }
       }
     }
@@ -134,30 +129,7 @@ function buildEnvChart(payload) {
   envChart = new Chart(ctx, {
     type: "line",
     data: { labels, datasets },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: { mode: "nearest", intersect: false },
-      plugins: {
-        legend: { labels: { color: "rgba(255,255,255,0.9)" } }
-      },
-      scales: {
-        x: {
-          ticks: {
-            color: "rgba(255,255,255,0.8)",
-            maxRotation: 35,
-            minRotation: 35,
-            autoSkip: true,
-            maxTicksLimit: 12
-          },
-          grid: { color: "rgba(255,255,255,0.08)" }
-        },
-        y: {
-          ticks: { color: "rgba(255,255,255,0.8)" },
-          grid: { color: "rgba(255,255,255,0.08)" }
-        }
-      }
-    }
+    options: chartOptionsBase()
   });
 }
 
@@ -176,30 +148,7 @@ function buildLightChart(payload) {
   lightChart = new Chart(ctx, {
     type: "line",
     data: { labels, datasets },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: { mode: "nearest", intersect: false },
-      plugins: {
-        legend: { labels: { color: "rgba(255,255,255,0.9)" } }
-      },
-      scales: {
-        x: {
-          ticks: {
-            color: "rgba(255,255,255,0.8)",
-            maxRotation: 35,
-            minRotation: 35,
-            autoSkip: true,
-            maxTicksLimit: 12
-          },
-          grid: { color: "rgba(255,255,255,0.08)" }
-        },
-        y: {
-          ticks: { color: "rgba(255,255,255,0.8)" },
-          grid: { color: "rgba(255,255,255,0.08)" }
-        }
-      }
-    }
+    options: chartOptionsBase()
   });
 }
 
@@ -218,9 +167,8 @@ function renderDecisionTable(rows) {
     if (r.decision === "no_action") dotCls = "red";
 
     const decisionLabel =
-      r.decision === "irrigate"
-        ? "Irrigate"
-        : (r.decision === "blocked" ? "Blocked" : "No action");
+      r.decision === "irrigate" ? "Irrigate" :
+      (r.decision === "blocked" ? "Blocked" : "No action");
 
     const dose = r.pump_duration_seconds ? fmtSeconds(r.pump_duration_seconds) : "—";
 
