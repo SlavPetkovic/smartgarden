@@ -4,15 +4,9 @@ import logging
 from threading import Thread
 
 from smartgarden.config import get_settings
-from smartgarden.services.scheduler import make_scheduler
-
-# DEV implementations
 from smartgarden.sensing.mock_reader import MockSensorReader
 from smartgarden.actuation.mock_actuator import MockActuator
-
-# PROD (Raspberry Pi) implementations
-from smartgarden.hardware.pi_reader import PiSensorReader
-from smartgarden.hardware.pi_actuator import PiActuator
+from smartgarden.services.scheduler import make_scheduler
 
 
 def setup_logging(debug: bool) -> None:
@@ -30,14 +24,8 @@ def main() -> None:
     print(f"[RUN] SmartGarden starting in '{settings.env}' mode")
     print(f"[RUN] DB path: {settings.db_path}")
 
-    if settings.env == "development":
-        print("[RUN] Using MOCK sensor + actuator")
-        reader = MockSensorReader()
-        actuator = MockActuator()
-    else:
-        print("[RUN] Using RASPBERRY PI hardware")
-        reader = PiSensorReader()
-        actuator = PiActuator()
+    reader = MockSensorReader()
+    actuator = MockActuator()
 
     scheduler = make_scheduler(
         settings=settings,
